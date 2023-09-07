@@ -5,6 +5,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from utils.predict import predict
 from sklearn.model_selection import train_test_split
+from utils.plot import plot_figure
 
 x_train = torch.rand(1000)
 x_train, indices1 = torch.sort(x_train)
@@ -37,6 +38,8 @@ ofe_num = 0
 flag = True
 epochs = 1000
 best_acc = 10e+6
+
+plt.ion()
 for epoch in range(epochs):
     optimizer.zero_grad()
     pred = model.forward(x_train)
@@ -62,12 +65,16 @@ for epoch in range(epochs):
 
     if epoch % 100 == 0:
         print('epoch: ' + str(epoch) + ' train loss: ' + str(round(loss_t.item(), 3)) + ' val loss: ' + str(round(loss_v.item(), 3)))
+        plot_figure(pred, x_val, y_val)
 
+plt.ioff()
+plt.show()
 
-fig, axe = plt.subplots(1, 2, figsize=(16, 4))
+fig, axe = plt.subplots(1, 2, figsize=(12, 3))
 axe[0].scatter(x_val.numpy(), y_val.numpy(), marker='o', c='#4169E1', alpha=0.8, label='Groud truth')  #  c='#7B68EE'
 pred = predict(model, x_val)
 axe[0].plot(x_val.numpy(), pred.detach().numpy(), 'r',  label='Prediction')
+axe[0].grid(0.4)
 if overfiting_epoch is not None:
     min_lim = min(history_val) if min(history_val) < min(history_train) else min(history_train)
     max_lim = max(history_val) if max(history_val) > max(history_train) else max(history_train)
