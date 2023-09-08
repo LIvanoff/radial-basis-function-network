@@ -1,6 +1,5 @@
-import torch
 import torch.nn as nn
-from function import RadialBasis
+from utils.function import RadialBasis
 
 
 class RBF(nn.Module):
